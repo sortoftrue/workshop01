@@ -1,5 +1,6 @@
 package workshop01;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,14 +13,16 @@ public class shoppingCart{
         String choice="";
         Scanner in = new Scanner(System.in);
 
-        while(choice!="exit"){
+        while(!choice.equals("exit")){
             
             System.out.println("""
                     Welcome. Enter:
                     -list
                     -add item, item, item
-                    -delete item, item, item
-                    -exit""");
+                    -delete number
+                    -deleteMult number, number, number
+                    -exit
+                    """);
 
             choice = in.next().trim().toLowerCase();
 
@@ -51,7 +54,46 @@ public class shoppingCart{
 
                     break;
                 }
-                
+
+                case "deletemult":{
+
+                    String numbers = in.nextLine();
+                    Scanner numberSplitter = new Scanner(numbers);
+                    numberSplitter.useDelimiter(",");
+                    List<Integer> listToDelete = new LinkedList<>();
+
+                    //store numbers in list
+                    while(numberSplitter.hasNext()){
+                        Integer number; 
+                        
+                        try{
+                            number = Integer.parseInt(numberSplitter.next().trim());
+                            if(number<1 || number>shoppingList.size()){
+                                System.out.printf("%d out of bounds!\n",number);
+                            } else{
+                                listToDelete.add(number);
+                            }
+                        } catch (Exception e){
+                            System.out.println("Non-integer entered!");
+                        }
+                       
+                    }
+
+                    //reverse sort
+                    Collections.sort(listToDelete,Collections.reverseOrder());
+
+                    System.out.println(listToDelete);
+
+                    //execute deletion
+                    for(Integer number:listToDelete){
+                        System.out.printf("%s was deleted!\n",shoppingList.get(number-1));
+                        shoppingList.remove(number-1);
+                    }
+
+                    break;
+
+                }
+
                 case "delete":{
                     
                     int deleteChoice;
@@ -59,7 +101,8 @@ public class shoppingCart{
                     try{
                         deleteChoice = in.nextInt();
                     } catch (Exception e){
-                        System.out.println("Please enter a number");
+                        System.out.println("Please enter a number\n");
+                        in.next();
                         break;
                     }
 
